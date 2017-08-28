@@ -5,7 +5,8 @@ package com.ogma.restrohub.enums;
  */
 public enum URL {
 
-    LOGIN("login"),
+    //LOGIN("login"),
+    LOGIN("login_restaurant_user"),
     TABLE_LIST("table_list"),
     CATEGORY_LIST("category_list"),
     MENU_LIST("menu_list"),
