@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ogma.restrohub.activity.SubMenu">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_sub_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_sheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:onClick="onClick"
+        android:src="@drawable/ic_add_shopping_cart_white"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:fabSize="mini"
+        app:layout_anchor="@+id/bottom_sheet"
+        app:layout_anchorGravity="top|right|end"
+        app:pressedTranslationZ="12dp" />
+
+    <include
+        android:id="@+id/bottom_sheet"
+        layout="@layout/bottom_sheet" />
+
+</android.support.design.widget.CoordinatorLayout>
