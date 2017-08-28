@@ -53,7 +53,7 @@ public class Login extends AppCompatActivity {
 
         cbRememberMe = (CheckBox) findViewById(R.id.cb_remember_me);
 
-        //set the saved email and password
+        // set the saved email and password
         etEmail.setText(app.getAppSettings().__uUsername);
         etPassword.setText(app.getAppSettings().__uPassword);
     }
