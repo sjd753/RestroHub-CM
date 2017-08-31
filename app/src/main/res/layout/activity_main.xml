@@ -49,7 +49,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center_horizontal|top"
+                    android:gravity="center"
                     android:onClick="onClick"
                     android:orientation="vertical">
 
@@ -67,99 +67,16 @@
                         android:text="MENU"
                         android:textAllCaps="true"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_reserve"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center_horizontal|top"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:src="@drawable/special_offer_icon" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:gravity="center"
-                        android:text="SPECIAL OFFER"
-                        android:textAllCaps="true"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal|top"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:src="@drawable/new_item_icon" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:gravity="center"
-                        android:text="NEW ITEMS"
-                        android:textAllCaps="true"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal|top"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:src="@drawable/popular_item_icon" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:gravity="center"
-                        android:text="POPULAR ITEMS"
-                        android:textAllCaps="true"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal|top"
+                    android:gravity="center"
                     android:orientation="vertical">
 
                     <ImageView
@@ -173,18 +90,19 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:gravity="center"
-                        android:text="FEEDBACK"
+                        android:text="RESERVATION"
                         android:textAllCaps="true"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_orders"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center_horizontal|top"
+                    android:gravity="center"
                     android:orientation="vertical">
 
                     <ImageView
@@ -198,14 +116,15 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:gravity="center"
-                        android:text="FIND MY ORDER"
+                        android:text="ORDERS"
                         android:textAllCaps="true"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
             </LinearLayout>
+
 
         </LinearLayout>
 
