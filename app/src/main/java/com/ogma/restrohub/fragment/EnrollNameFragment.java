@@ -1,6 +1,5 @@
 package com.ogma.restrohub.fragment;
 
-
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -40,7 +39,6 @@ import static android.content.ContentValues.TAG;
  * A simple {@link Fragment} subclass.
  */
 public class EnrollNameFragment extends Fragment implements View.OnClickListener {
-
 
     private TextInputLayout tilName;
     private TextInputLayout tilPersons;
@@ -145,7 +143,6 @@ public class EnrollNameFragment extends Fragment implements View.OnClickListener
             case R.id.btn_reserve:
                 if (validate() && prepareExecuteAsync())
                     setEnroll();
-
                 break;
             default:
                 break;
@@ -229,7 +226,6 @@ public class EnrollNameFragment extends Fragment implements View.OnClickListener
                 boolean status = response != null && response.getInt("is_error") == 0;
                 if (status) {
                     __uMsg = response.getString("success_msg");
-
                 }
                 return status;
             } catch (JSONException | NullPointerException e) {
@@ -255,12 +251,9 @@ public class EnrollNameFragment extends Fragment implements View.OnClickListener
                 etSpecialRequest.setText("");
                 etBookTime.setText("");
                 Toast.makeText(getActivity(), __uMsg, Toast.LENGTH_SHORT).show();
-
             } else {
                 Toast.makeText(getActivity(), "Enroll Failed", Toast.LENGTH_SHORT).show();
             }
         }
     }
-
-
 }

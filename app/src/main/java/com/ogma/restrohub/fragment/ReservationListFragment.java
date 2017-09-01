@@ -8,6 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -81,6 +82,8 @@ public class ReservationListFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+
         recyclerAdapter = new RecyclerAdapter();
         recyclerView.setAdapter(recyclerAdapter);
 
@@ -110,7 +113,7 @@ public class ReservationListFragment extends Fragment {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.reserve_detail, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_reservation_list, parent, false);
 
             return new ViewHolder(view);
         }
@@ -121,11 +124,8 @@ public class ReservationListFragment extends Fragment {
             holder.tvCustomerName.setText(jArr.optJSONObject(position).optString("customer_name", ""));
             holder.tvArrivalTime.setText(jArr.optJSONObject(position).optString("expected_arrival_time", ""));
             holder.tvPhone.setText(jArr.optJSONObject(position).optString("phone_no", ""));
-            holder.tvTotalPerson.setText(jArr.optJSONObject(position).optString("total_person", ""));
-
-
+            holder.tvTotalPerson.setText(jArr.optJSONObject(position).optString("total_person", "0") + " Person(s)");
         }
-
 
         @Override
         public int getItemCount() {

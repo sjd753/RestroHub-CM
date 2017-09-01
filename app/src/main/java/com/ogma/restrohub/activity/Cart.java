@@ -1,5 +1,3 @@
-
-
 package com.ogma.restrohub.activity;
 
 import android.app.ProgressDialog;

@@ -56,10 +56,7 @@ public class Menu extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
-
-
         }
-
 
         app = (App) getApplication();
         app.setAppSettings(new AppSettings(this));
@@ -149,6 +146,7 @@ public class Menu extends AppCompatActivity {
             startActivity(new Intent(this, Cart.class));
             return true;
         }
+
         if (item.getItemId() == R.id.menu_logout) {
             promptUser();
             return true;
