@@ -104,7 +104,7 @@ public class Login extends AppCompatActivity {
         private String error_msg = "Server error!";
         private ProgressDialog mDialog = new ProgressDialog(Login.this);
         private JSONObject response;
-        private String __uRestaurantId = "", __uId = "", __uUsername = "", __uFirstName = "", __uLastName = "", __uEmail = "", __uPassword = "";
+        private String __uRestaurantId = "", __uId = "", __uUsername = "", __uPassword = "";
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -143,9 +143,9 @@ public class Login extends AppCompatActivity {
             mDialog.dismiss();
             if (status) {
                 if (cbRememberMe.isChecked()) {
-                    app.getAppSettings().setSession(__uRestaurantId, __uId, __uUsername, __uFirstName, __uLastName, __uEmail, __uPassword, true);
+                    app.getAppSettings().setSession(__uRestaurantId, __uId, __uUsername, __uPassword, true);
                 } else {
-                    app.getAppSettings().setSession(__uRestaurantId, __uId, __uUsername, __uFirstName, __uLastName, __uEmail, "", true);
+                    app.getAppSettings().setSession(__uRestaurantId, __uId, __uUsername, "", true);
                 }
                 startActivity(new Intent(Login.this, MainActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));

@@ -153,6 +153,11 @@ public class Menu extends AppCompatActivity {
             promptUser();
             return true;
         }
+
+        if (item.getItemId() == R.id.menu_logout) {
+            promptUser();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
