@@ -26,9 +26,9 @@
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/sp_tables"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
             </android.support.v7.widget.Toolbar>
 

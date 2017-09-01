@@ -5,10 +5,10 @@ package com.ogma.restrohub.activity;
 import android.app.ProgressDialog;
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -191,17 +190,90 @@ public class Cart extends AppCompatActivity {
         }
     }
 
+    private boolean prepareExecuteAsync() {
+        if (connection.isNetworkConnected()) {
+            return true;
+        } else if (connection.isNetworkConnectingOrConnected()) {
+            Snackbar.make(coordinatorLayout, "Connection temporarily unavailable", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(coordinatorLayout, "You're offline", Snackbar.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    public void onClick(View view) {
+        if (view.getId() == R.id.btn_place_order) {
+            if (button.getTag().equals(TAG_PLACE_ORDER)) {
+                DatabaseHandler databaseHandler = new DatabaseHandler(this);
+                int orderId = databaseHandler.getOrderIdIfExists(tableId);
+
+                if (orderId > 0 && prepareExecuteAsync()) {
+                    OrderBean orderBean = databaseHandler.getOrder(orderId);
+
+                    ArrayList<OrderDetailBean> list = databaseHandler.getOrderItems(orderId);
+
+                    databaseHandler.closeDB();
+                    if (list.size() > 0)
+                        new PlaceOrderTask(list).execute(String.valueOf(orderId),
+                                orderBean.getServerOrderId(),
+                                orderBean.getOrderStatus(),
+                                orderBean.getTotalAmount());
+                }
+            } else if (button.getTag().equals(TAG_PAY_NOW)) {
+                DatabaseHandler databaseHandler = new DatabaseHandler(this);
+                int orderId = databaseHandler.getOrderIdIfExists(tableId);
+
+                if (orderId > 0 && prepareExecuteAsync()) {
+                    OrderBean orderBean = databaseHandler.getOrder(orderId);
+                    databaseHandler.closeDB();
+                    new PayNowTask().execute(String.valueOf(orderId), orderBean.getServerOrderId());
+                }
+            } else {
+                Log.e("onClick: ", "unknown tag");
+                Snackbar.make(coordinatorLayout, "Something went wrong", Snackbar.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void emptyCart(String tableId) {
+        DatabaseHandler databaseHandler = new DatabaseHandler(this);
+        int orderId = databaseHandler.getOrderIdIfExists(tableId);
+        if (orderId > 0) {
+            databaseHandler.deleteOrder(orderId);
+            list = databaseHandler.getOrderItemsNested(orderId);
+            databaseHandler.closeDB();
+            expandableListAdapter.notifyDataSetChanged();
+            collapseAll();
+            expandAll();
+            viewSwitcher.setDisplayedChild(0);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_cart, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        if (item.getItemId() == R.id.menu_action_empty_cart) {
+            //Todo: Empty cart
+            emptyCart(tableId);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private class ExpandableListAdapter extends BaseExpandableListAdapter {
         private GroupViewHolder groupViewHolder;
         private ChildViewHolder childViewHolder;
-
-        class GroupViewHolder {
-            TextView tvTitle;
-        }
-
-        class ChildViewHolder {
-            TextView tvTitle, tvQuantity, tvOrderStatus, tvTotalPrice, tvPrice;
-        }
 
         @Override
         public void registerDataSetObserver(DataSetObserver dataSetObserver) {
@@ -334,87 +406,14 @@ public class Cart extends AppCompatActivity {
         public long getCombinedGroupId(long groupId) {
             return 0;
         }
-    }
 
-    private boolean prepareExecuteAsync() {
-        if (connection.isNetworkConnected()) {
-            return true;
-        } else if (connection.isNetworkConnectingOrConnected()) {
-            Snackbar.make(coordinatorLayout, "Connection temporarily unavailable", Snackbar.LENGTH_SHORT).show();
-        } else {
-            Snackbar.make(coordinatorLayout, "You're offline", Snackbar.LENGTH_SHORT).show();
-        }
-        return false;
-    }
-
-    public void onClick(View view) {
-        if (view.getId() == R.id.btn_place_order) {
-            if (button.getTag().equals(TAG_PLACE_ORDER)) {
-                DatabaseHandler databaseHandler = new DatabaseHandler(this);
-                int orderId = databaseHandler.getOrderIdIfExists(tableId);
-
-                if (orderId > 0 && prepareExecuteAsync()) {
-                    OrderBean orderBean = databaseHandler.getOrder(orderId);
-
-                    ArrayList<OrderDetailBean> list = databaseHandler.getOrderItems(orderId);
-
-                    databaseHandler.closeDB();
-                    if (list.size() > 0)
-                        new PlaceOrderTask(list).execute(String.valueOf(orderId),
-                                orderBean.getServerOrderId(),
-                                orderBean.getOrderStatus(),
-                                orderBean.getTotalAmount());
-                }
-            } else if (button.getTag().equals(TAG_PAY_NOW)) {
-                DatabaseHandler databaseHandler = new DatabaseHandler(this);
-                int orderId = databaseHandler.getOrderIdIfExists(tableId);
-
-                if (orderId > 0 && prepareExecuteAsync()) {
-                    OrderBean orderBean = databaseHandler.getOrder(orderId);
-                    databaseHandler.closeDB();
-                    new PayNowTask().execute(String.valueOf(orderId), orderBean.getServerOrderId());
-                }
-            } else {
-                Log.e("onClick: ", "unknown tag");
-                Snackbar.make(coordinatorLayout, "Something went wrong", Snackbar.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void emptyCart(String tableId) {
-        DatabaseHandler databaseHandler = new DatabaseHandler(this);
-        int orderId = databaseHandler.getOrderIdIfExists(tableId);
-        if (orderId > 0) {
-            databaseHandler.deleteOrder(orderId);
-            list = databaseHandler.getOrderItemsNested(orderId);
-            databaseHandler.closeDB();
-            expandableListAdapter.notifyDataSetChanged();
-            collapseAll();
-            expandAll();
-            viewSwitcher.setDisplayedChild(0);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_cart, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
+        class GroupViewHolder {
+            TextView tvTitle;
         }
 
-        if (item.getItemId() == R.id.menu_action_empty_cart) {
-            //Todo: Empty cart
-            emptyCart(tableId);
-            return true;
+        class ChildViewHolder {
+            TextView tvTitle, tvQuantity, tvOrderStatus, tvTotalPrice, tvPrice;
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private class PlaceOrderTask extends AsyncTask<String, Void, Boolean> {

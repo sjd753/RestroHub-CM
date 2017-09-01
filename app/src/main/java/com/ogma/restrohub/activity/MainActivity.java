@@ -46,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.ll_menu:
                 startActivity(new Intent(this, Menu.class));
                 break;
+            case R.id.l1_reservation:
+                startActivity(new Intent(this, ReservationActivity.class));
+                break;
             default:
                 break;
         }

@@ -2,9 +2,9 @@ package com.ogma.restrohub.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.database.SQLException;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -12,7 +12,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,9 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +70,57 @@ public class SubMenu extends AppCompatActivity {
     private App app;
     private JSONArray jArrSpinner = new JSONArray();
     private String tableId;
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        private int count = 0;
+
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, android.view.Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.menu_sub_menu_action, menu);
+            mode.setTitle(String.valueOf(count));
+            return true;
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, android.view.Menu menu) {
+            return false;// Return false if nothing is done
+        }
+
+        // Called when the user selects a contextual menu item
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_action_add_quantity:
+                    count++;
+                    mode.setTitle(String.valueOf(count));
+                    return true;
+                case R.id.menu_action_decrease_quantity:
+                    count--;
+                    mode.setTitle(String.valueOf(count));
+                    return true;
+                case R.id.menu_action_add_to_cart:
+                    CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+                    Snackbar.make(coordinatorLayout, "Added to cart", Snackbar.LENGTH_SHORT).show();
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                default:
+                    mode.finish(); // Action picked, so close the CAB
+                    return false;
+            }
+        }
+
+        // Called when the user exits the action mode
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            count = 0;
+            mActionMode = null;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -321,58 +369,6 @@ public class SubMenu extends AppCompatActivity {
             databaseHandler.updateTotalAmount(orderId, totalAmount);
         }
     }
-
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-
-        private int count = 0;
-
-        // Called when the action mode is created; startActionMode() was called
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, android.view.Menu menu) {
-            // Inflate a menu resource providing context menu items
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.menu_sub_menu_action, menu);
-            mode.setTitle(String.valueOf(count));
-            return true;
-        }
-
-        // Called each time the action mode is shown. Always called after onCreateActionMode, but
-        // may be called multiple times if the mode is invalidated.
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, android.view.Menu menu) {
-            return false;// Return false if nothing is done
-        }
-
-        // Called when the user selects a contextual menu item
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.menu_action_add_quantity:
-                    count++;
-                    mode.setTitle(String.valueOf(count));
-                    return true;
-                case R.id.menu_action_decrease_quantity:
-                    count--;
-                    mode.setTitle(String.valueOf(count));
-                    return true;
-                case R.id.menu_action_add_to_cart:
-                    CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
-                    Snackbar.make(coordinatorLayout, "Added to cart", Snackbar.LENGTH_SHORT).show();
-                    mode.finish(); // Action picked, so close the CAB
-                    return true;
-                default:
-                    mode.finish(); // Action picked, so close the CAB
-                    return false;
-            }
-        }
-
-        // Called when the user exits the action mode
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            count = 0;
-            mActionMode = null;
-        }
-    };
 
     private class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 

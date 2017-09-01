@@ -5,7 +5,6 @@ import android.content.Context;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.ogma.restrohub.R;
 
 /**
  * Created by User on 02-09-2016.

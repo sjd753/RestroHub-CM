@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="group_tabs">
+        <item>@string/tab_one</item>
+        <item>@string/tab_two</item>
+    </array>
+
+    <string name="tab_one">Enroll</string>
+    <string name="tab_two">Reserve</string>
+
+
+</resources>
+

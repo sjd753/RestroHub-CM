@@ -53,7 +53,7 @@ public class Login extends AppCompatActivity {
 
         cbRememberMe = (CheckBox) findViewById(R.id.cb_remember_me);
 
-        // set the saved email and password
+        //set the saved email and password
         etEmail.setText(app.getAppSettings().__uUsername);
         etPassword.setText(app.getAppSettings().__uPassword);
     }
@@ -112,7 +112,7 @@ public class Login extends AppCompatActivity {
                 JSONObject mJsonObject = new JSONObject();
                 mJsonObject.put("username", params[0]);
                 mJsonObject.put("password", params[1]);
-                mJsonObject.put("user_type", "RC");
+                mJsonObject.put("user_type", "CM");
                 mJsonObject.put("device_token", "");
                 mJsonObject.put("device_type", "android");
 
@@ -126,9 +126,9 @@ public class Login extends AppCompatActivity {
                     __uRestaurantId = response.getString("restaurant_id");
                     __uId = response.getString("id");
                     __uUsername = response.getString("username");
-                    __uFirstName = response.getString("first_name");
-                    __uLastName = response.getString("last_name");
-                    __uEmail = response.getString("email");
+                    //    __uFirstName = response.getString("first_name"); // not required here for customer manager
+                    //    __uLastName = response.getString("last_name");
+                    //    __uEmail = response.getString("email");
                 }
                 return status;
             } catch (JSONException | NullPointerException e) {
@@ -149,6 +149,7 @@ public class Login extends AppCompatActivity {
                 }
                 startActivity(new Intent(Login.this, MainActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+
             } else {
                 try {
                     Snackbar.make(coordinatorLayout, response.getString("err_msg"), Snackbar.LENGTH_LONG).show();

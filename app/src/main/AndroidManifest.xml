@@ -38,8 +38,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.Cart"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.TableActivity" />
+        <activity
+            android:name=".activity.ReservationActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

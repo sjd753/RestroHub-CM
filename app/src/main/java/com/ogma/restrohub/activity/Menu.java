@@ -1,14 +1,14 @@
 package com.ogma.restrohub.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -56,7 +56,10 @@ public class Menu extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
+
+
         }
+
 
         app = (App) getApplication();
         app.setAppSettings(new AppSettings(this));
@@ -99,6 +102,31 @@ public class Menu extends AppCompatActivity {
         return true;
     }
 
+    private void promptUser() {
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle("Logout");
+        adb.setMessage("Do you want to logout?");
+        adb.setPositiveButton("LOGOUT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                app.getAppSettings().revokeSession();
+                Intent intent = new Intent(Menu.this, Login.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+        adb.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        adb.setCancelable(false);
+        adb.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_action_show_as_grid) {
@@ -119,6 +147,10 @@ public class Menu extends AppCompatActivity {
 
         if (item.getItemId() == R.id.menu_action_cart) {
             startActivity(new Intent(this, Cart.class));
+            return true;
+        }
+        if (item.getItemId() == R.id.menu_logout) {
+            promptUser();
             return true;
         }
         return super.onOptionsItemSelected(item);

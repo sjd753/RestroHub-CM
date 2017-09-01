@@ -5,12 +5,16 @@ package com.ogma.restrohub.enums;
  */
 public enum URL {
 
-    LOGIN("login"),
+    //LOGIN("login"),
+    LOGIN("login_restaurant_user"),
     TABLE_LIST("table_list"),
     CATEGORY_LIST("category_list"),
     MENU_LIST("menu_list"),
     PLACE_ORDER("place_order"),
-    PAY_NOW("change_order_status");
+    PAY_NOW("change_order_status"),
+    ENROLL("reservation"),
+    RESERVE("reservation_list");
+
 
     public String BASE_URL = "http://ogmaconceptions.com/demo/restaurant/restro_hubapp/";
 
