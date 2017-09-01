@@ -78,7 +78,6 @@ public class Menu extends AppCompatActivity {
 
         if (prepareExecuteAsync())
             new FetchCategoryTask().execute();
-
     }
 
     private boolean prepareExecuteAsync() {
