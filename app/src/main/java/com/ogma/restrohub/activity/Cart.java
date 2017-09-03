@@ -133,6 +133,7 @@ public class Cart extends AppCompatActivity {
             public void onRefresh() {
 
                 if (orderId > 0 && prepareExecuteAsync()) {
+
                     OrderBean orderBean = databaseHandler.getOrder(orderId);
                     databaseHandler.closeDB();
                     new CurrentOrderStatusTask().execute(orderBean.getServerOrderId());
