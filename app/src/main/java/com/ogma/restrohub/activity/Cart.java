@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -49,6 +50,7 @@ public class Cart extends AppCompatActivity {
     private App app;
     private NetworkConnection connection;
     private CoordinatorLayout coordinatorLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ExpandableListView expandableListView;
     private ExpandableListAdapter expandableListAdapter;
     private ArrayList<CategoryBean> list = new ArrayList<>();
@@ -121,6 +123,26 @@ public class Cart extends AppCompatActivity {
         });
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+        final DatabaseHandler databaseHandler = new DatabaseHandler(this);
+        final int orderId = databaseHandler.getOrderIdIfExists(tableId);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorAccent, R.color.colorAccentLight);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                if (orderId > 0 && prepareExecuteAsync()) {
+                    OrderBean orderBean = databaseHandler.getOrder(orderId);
+                    databaseHandler.closeDB();
+                    new CurrentOrderStatusTask().execute(orderBean.getServerOrderId());
+                }
+
+                /*if (prepareExecuteAsync()) {
+                    new CurrentOrderStatusTask().execute();
+                }*/
+            }
+        });
 
         expandableListView = (ExpandableListView) findViewById(R.id.elv_cart);
         expandableListAdapter = new ExpandableListAdapter();
@@ -559,4 +581,57 @@ public class Cart extends AppCompatActivity {
             }
         }
     }
+
+    private class CurrentOrderStatusTask extends AsyncTask<String, Void, Boolean> {
+        private String error_msg = "Server error!";
+        private String success_msg = "";
+        private Snackbar snackbar;
+        private JSONObject response;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            swipeRefreshLayout.setRefreshing(true);
+            snackbar = Snackbar.make(coordinatorLayout, "Please wait...", Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            try {
+                JSONObject mJsonObject = new JSONObject();
+                mJsonObject.put("server_order_id", params[0]);
+
+
+                Log.e("Send Obj:", mJsonObject.toString());
+                response = HttpClient.SendHttpPost(URL.CURRENT_ORDER_STATUS.getURL(), mJsonObject);
+                boolean status = response != null && response.getInt("is_error") == 0;
+                if (status) {
+                    success_msg = response.getString("success_msg");
+                } else if (response != null) {
+                    error_msg = response.getString("err_msg");
+                }
+                return status;
+            } catch (JSONException | NullPointerException e) {
+                e.printStackTrace();
+                snackbar.dismiss();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean status) {
+            swipeRefreshLayout.setRefreshing(false);
+            snackbar.dismiss();
+            if (status) {
+
+                Snackbar.make(coordinatorLayout, success_msg, Snackbar.LENGTH_INDEFINITE).show();
+
+            } else {
+                Snackbar.make(coordinatorLayout, error_msg, Snackbar.LENGTH_LONG).show();
+            }
+        }
+    }
+
 }

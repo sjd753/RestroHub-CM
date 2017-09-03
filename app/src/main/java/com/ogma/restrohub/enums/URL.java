@@ -13,7 +13,8 @@ public enum URL {
     PLACE_ORDER("place_order"),
     PAY_NOW("change_order_status"),
     ENROLL("reservation"),
-    RESERVE("reservation_list");
+    RESERVE("reservation_list"),
+    CURRENT_ORDER_STATUS("current_order_status");
 
 
     public String BASE_URL = "http://ogmaconceptions.com/demo/restaurant/restro_hubapp/";
