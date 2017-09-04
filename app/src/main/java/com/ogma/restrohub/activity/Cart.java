@@ -123,19 +123,17 @@ public class Cart extends AppCompatActivity {
         });
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
-        final DatabaseHandler databaseHandler = new DatabaseHandler(this);
-        final int orderId = databaseHandler.getOrderIdIfExists(tableId);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorAccent, R.color.colorAccentLight);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                DatabaseHandler databaseHandler = new DatabaseHandler(Cart.this);
+                int orderId = databaseHandler.getOrderIdIfExists(tableId);
+                databaseHandler.closeDB();
                 if (orderId > 0 && prepareExecuteAsync()) {
-
                     OrderBean orderBean = databaseHandler.getOrder(orderId);
-                    databaseHandler.closeDB();
                     new CurrentOrderStatusTask().execute(orderBean.getServerOrderId());
                 }
 
@@ -604,7 +602,6 @@ public class Cart extends AppCompatActivity {
                 JSONObject mJsonObject = new JSONObject();
                 mJsonObject.put("server_order_id", params[0]);
 
-
                 Log.e("Send Obj:", mJsonObject.toString());
                 response = HttpClient.SendHttpPost(URL.CURRENT_ORDER_STATUS.getURL(), mJsonObject);
                 boolean status = response != null && response.getInt("is_error") == 0;
@@ -626,13 +623,10 @@ public class Cart extends AppCompatActivity {
             swipeRefreshLayout.setRefreshing(false);
             snackbar.dismiss();
             if (status) {
-
                 Snackbar.make(coordinatorLayout, success_msg, Snackbar.LENGTH_INDEFINITE).show();
-
             } else {
                 Snackbar.make(coordinatorLayout, error_msg, Snackbar.LENGTH_LONG).show();
             }
         }
     }
-
 }
