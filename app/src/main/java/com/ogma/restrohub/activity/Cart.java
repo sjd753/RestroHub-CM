@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -59,6 +60,7 @@ public class Cart extends AppCompatActivity {
     private JSONArray jArrSpinner = new JSONArray();
     private String tableId;
     private Spinner spinner;
+    private TextView tvOrderStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,9 @@ public class Cart extends AppCompatActivity {
         viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher);
         button = (Button) findViewById(R.id.btn_place_order);
         button.setTag(TAG_PLACE_ORDER);
+
+        tvOrderStatus = (TextView) findViewById(R.id.tv_order_status);
+
 
         spinner = (Spinner) findViewById(R.id.sp_tables);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.custom_spinner_item, tables);
@@ -436,6 +441,7 @@ public class Cart extends AppCompatActivity {
     }
 
     private class PlaceOrderTask extends AsyncTask<String, Void, Boolean> {
+        private String order_status = "";
         private String error_msg = "Server error!";
         private ProgressDialog mDialog = new ProgressDialog(Cart.this);
         private JSONObject response;
@@ -492,6 +498,7 @@ public class Cart extends AppCompatActivity {
 
                 boolean status = response != null && response.getInt("is_error") == 0;
                 if (status) {
+                    order_status = response.getString("order_status");
                     serverOrderId = response.getString("order_id");
                 }
                 return status;
@@ -505,6 +512,7 @@ public class Cart extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean status) {
             mDialog.dismiss();
+//            button.setEnabled(false);
             if (status) {
                 DatabaseHandler databaseHandler = new DatabaseHandler(Cart.this);
                 databaseHandler.updateServerOrderId(Integer.parseInt(orderId), Integer.parseInt(serverOrderId));
@@ -515,6 +523,11 @@ public class Cart extends AppCompatActivity {
                 collapseAll();
                 expandAll();
                 notifyButton();
+                button.setEnabled(false);
+                button.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorAccentLight, getTheme()));
+
+                tvOrderStatus.setText(order_status);
+
             } else {
                 try {
                     Snackbar.make(coordinatorLayout, response.getString("err_msg"), Snackbar.LENGTH_LONG).show();
@@ -584,6 +597,7 @@ public class Cart extends AppCompatActivity {
     private class CurrentOrderStatusTask extends AsyncTask<String, Void, Boolean> {
         private String error_msg = "Server error!";
         private String success_msg = "";
+        private String order_status = "";
         private Snackbar snackbar;
         private JSONObject response;
 
@@ -606,6 +620,7 @@ public class Cart extends AppCompatActivity {
                 response = HttpClient.SendHttpPost(URL.CURRENT_ORDER_STATUS.getURL(), mJsonObject);
                 boolean status = response != null && response.getInt("is_error") == 0;
                 if (status) {
+                    order_status = response.getString("order_status");
                     success_msg = response.getString("success_msg");
                 } else if (response != null) {
                     error_msg = response.getString("err_msg");
@@ -623,7 +638,10 @@ public class Cart extends AppCompatActivity {
             swipeRefreshLayout.setRefreshing(false);
             snackbar.dismiss();
             if (status) {
-                Snackbar.make(coordinatorLayout, success_msg, Snackbar.LENGTH_INDEFINITE).show();
+                button.setEnabled(order_status.equals("serving"));
+                button.setBackgroundColor(order_status.equals("serving") ? ResourcesCompat.getColor(getResources(), R.color.colorAccent, getTheme()) : ResourcesCompat.getColor(getResources(), R.color.colorAccentLight, getTheme()));
+                tvOrderStatus.setText(order_status);
+                Snackbar.make(coordinatorLayout, success_msg, Snackbar.LENGTH_LONG).show();
             } else {
                 Snackbar.make(coordinatorLayout, error_msg, Snackbar.LENGTH_LONG).show();
             }

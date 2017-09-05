@@ -76,6 +76,40 @@
                 </android.support.v4.widget.SwipeRefreshLayout>
 
                 <RelativeLayout
+                    android:id="@+id/rl_order_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/rl_grand_total">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:paddingBottom="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:text="Order Status"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/tv_order_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:paddingBottom="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:text="Pending"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+                <RelativeLayout
                     android:id="@+id/rl_grand_total"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
