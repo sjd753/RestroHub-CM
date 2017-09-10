@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,7 +61,8 @@ public class Cart extends AppCompatActivity {
     private JSONArray jArrSpinner = new JSONArray();
     private String tableId;
     private Spinner spinner;
-    private TextView tvOrderStatus;
+    private TextView tvOrderStatus, tvWaitTime, tvWaitText;
+    private RelativeLayout rlWaitTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,8 @@ public class Cart extends AppCompatActivity {
         button.setTag(TAG_PLACE_ORDER);
 
         tvOrderStatus = (TextView) findViewById(R.id.tv_order_status);
+        tvWaitTime = (TextView) findViewById(R.id.tv_wait_time);
+        tvWaitText = (TextView) findViewById(R.id.tv_wait_text);
 
 
         spinner = (Spinner) findViewById(R.id.sp_tables);
@@ -126,7 +130,7 @@ public class Cart extends AppCompatActivity {
 
             }
         });
-
+        rlWaitTime = (RelativeLayout) findViewById(R.id.rl_wait_time);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
@@ -142,9 +146,6 @@ public class Cart extends AppCompatActivity {
                     new CurrentOrderStatusTask().execute(orderBean.getServerOrderId());
                 }
 
-                /*if (prepareExecuteAsync()) {
-                    new CurrentOrderStatusTask().execute();
-                }*/
             }
         });
 
@@ -155,6 +156,23 @@ public class Cart extends AppCompatActivity {
 //        notifyAdapter();
         expandAll();
         notifyButton();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchOrderIfPlaced();
+    }
+
+    private void fetchOrderIfPlaced() {
+        DatabaseHandler databaseHandler = new DatabaseHandler(Cart.this);
+        int orderId = databaseHandler.getOrderIdIfExists(tableId);
+        databaseHandler.closeDB();
+        if (orderId > 0) {
+            OrderBean orderBean = databaseHandler.getOrder(orderId);
+            if (Integer.parseInt(orderBean.getServerOrderId()) > 0 && prepareExecuteAsync())
+                new CurrentOrderStatusTask().execute(orderBean.getServerOrderId());
+        }
     }
 
     private void notifyAdapter() {
@@ -598,6 +616,7 @@ public class Cart extends AppCompatActivity {
         private String error_msg = "Server error!";
         private String success_msg = "";
         private String order_status = "";
+        private String preparation_time = "";
         private Snackbar snackbar;
         private JSONObject response;
 
@@ -622,6 +641,8 @@ public class Cart extends AppCompatActivity {
                 if (status) {
                     order_status = response.getString("order_status");
                     success_msg = response.getString("success_msg");
+                    if (order_status.equals("processing"))
+                        preparation_time = response.getString("preparation_time");
                 } else if (response != null) {
                     error_msg = response.getString("err_msg");
                 }
@@ -639,8 +660,19 @@ public class Cart extends AppCompatActivity {
             snackbar.dismiss();
             if (status) {
                 button.setEnabled(order_status.equals("serving"));
+                if (order_status.equals("serving")) {
+                    tvWaitText.setVisibility(View.GONE);
+                }
                 button.setBackgroundColor(order_status.equals("serving") ? ResourcesCompat.getColor(getResources(), R.color.colorAccent, getTheme()) : ResourcesCompat.getColor(getResources(), R.color.colorAccentLight, getTheme()));
                 tvOrderStatus.setText(order_status);
+                if (order_status.equals("processing")) {
+                    rlWaitTime.setVisibility(View.VISIBLE);
+                    tvWaitTime.setText(preparation_time);
+                    if (preparation_time.equals("0")) {
+                        tvWaitText.setText("Please wait...");
+                        tvWaitTime.setVisibility(View.GONE);
+                    }
+                }
                 Snackbar.make(coordinatorLayout, success_msg, Snackbar.LENGTH_LONG).show();
             } else {
                 Snackbar.make(coordinatorLayout, error_msg, Snackbar.LENGTH_LONG).show();
