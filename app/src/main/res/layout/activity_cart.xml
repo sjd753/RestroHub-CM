@@ -140,7 +140,7 @@
                         android:paddingEnd="16dp"
                         android:paddingStart="16dp"
                         android:paddingTop="8dp"
-                        android:text="Pending"
+                        android:text="pending"
                         android:textColor="@color/colorAccent"
                         android:textSize="18sp"
                         android:textStyle="bold" />

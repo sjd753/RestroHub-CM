@@ -53,6 +53,7 @@ public class Menu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -126,6 +127,10 @@ public class Menu extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
         if (item.getItemId() == R.id.menu_action_show_as_grid) {
             item.setVisible(false);
             menu.findItem(R.id.menu_action_show_as_list).setVisible(true);
