@@ -181,7 +181,7 @@ public class Cart extends AppCompatActivity {
         int orderId = databaseHandler.getOrderIdIfExists(tableId);
         Log.e(TAG, "notifyAdapter: orderId " + orderId);
         if (orderId > 0) {
-            String grandTotal = "$" + databaseHandler.getOrder(orderId).getTotalAmount();
+            String grandTotal = "Rs" + databaseHandler.getOrder(orderId).getTotalAmount();
             list.clear();
             list.addAll(databaseHandler.getOrderItemsNested(orderId));
             Log.e(TAG, "notifyAdapter: list menu items " + list.get(0).getMenuItems().size());
@@ -408,8 +408,8 @@ public class Cart extends AppCompatActivity {
             float offerPrice = Float.parseFloat(list.get(groupPosition)
                     .getMenuItems().get(childPosition)
                     .getOfferPrice());
-            childViewHolder.tvPrice.setText("$" + offerPrice);
-            childViewHolder.tvTotalPrice.setText("$" + offerPrice * quantity);
+            childViewHolder.tvPrice.setText("Rs" + offerPrice);
+            childViewHolder.tvTotalPrice.setText("Rs" + offerPrice * quantity);
 
             return itemView;
         }
@@ -662,6 +662,7 @@ public class Cart extends AppCompatActivity {
                 button.setEnabled(order_status.equals("serving"));
                 if (order_status.equals("serving")) {
                     tvWaitText.setVisibility(View.GONE);
+                    tvWaitTime.setVisibility(View.GONE);
                 }
                 button.setBackgroundColor(order_status.equals("serving") ? ResourcesCompat.getColor(getResources(), R.color.colorAccent, getTheme()) : ResourcesCompat.getColor(getResources(), R.color.colorAccentLight, getTheme()));
                 tvOrderStatus.setText(order_status);

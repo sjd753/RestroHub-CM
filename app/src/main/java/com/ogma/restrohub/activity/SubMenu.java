@@ -210,7 +210,7 @@ public class SubMenu extends AppCompatActivity {
                 String quantity = "Quantity: " + progress;
                 tvSheetQuantity.setText(quantity);
                 int price = itemOfferPrice * progress;
-                String priceString = "Price: $" + price;
+                String priceString = "Price: Rs" + price;
                 tvSheetPrice.setText(priceString);
             }
 
@@ -393,7 +393,7 @@ public class SubMenu extends AppCompatActivity {
                         String quantity = "Quantity: 1";
                         tvSheetQuantity.setText(quantity);
                         itemOfferPrice = Integer.parseInt(jArr.getJSONObject(position).getString("offer_price"));
-                        String offerPrice = "Price: $" + itemOfferPrice;
+                        String offerPrice = "Price: Rs" + itemOfferPrice;
                         tvSheetPrice.setText(offerPrice);
                         seekBarSheet.setProgress(1);
                         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -431,8 +431,8 @@ public class SubMenu extends AppCompatActivity {
             try {
                 holder.tvName.setText(jArr.getJSONObject(position).getString("name"));
                 holder.tvDetail.setText(jArr.getJSONObject(position).getString("description"));
-                holder.tvPrice.setText("$" + jArr.getJSONObject(position).getString("price"));
-                holder.tvOfferPrice.setText("$" + jArr.getJSONObject(position).getString("offer_price"));
+                holder.tvPrice.setText("Rs" + jArr.getJSONObject(position).getString("price"));
+                holder.tvOfferPrice.setText("Rs" + jArr.getJSONObject(position).getString("offer_price"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
